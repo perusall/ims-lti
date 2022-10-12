@@ -33,7 +33,8 @@ class OutcomeDocument
     @doc.attribute 'xmlns', 'http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0'
 
     @head = @doc.ele('imsx_POXHeader').ele('imsx_POXRequestHeaderInfo')
-    @body = @doc.ele('imsx_POXBody').ele(type + 'Request').ele('resultRecord')
+    @container = @doc.ele('imsx_POXBody').ele(type + 'Request')
+    @body = @container.ele('resultRecord')
 
     # Generate a unique identifier and apply the version to the header information
     @head.ele 'imsx_version', 'V1.0'
@@ -51,6 +52,8 @@ class OutcomeDocument
     eScore.ele('language', language)
     eScore.ele('textString', score)
 
+  add_submission_time: (submission_time) ->
+    @container.ele('submissionDetails').ele('submittedAt', submission_time)
 
   add_text: (text) ->
     @_add_payload('text', text)
@@ -98,11 +101,12 @@ class OutcomeService
     @service_url_oauth = parts.protocol + '//' + parts.host + parts.pathname
 
 
-  send_replace_result: (score, callback) ->
+  send_replace_result: (score, submission_time, callback) ->
     doc = new OutcomeDocument @REQUEST_REPLACE, @source_did, @
 
     try
       doc.add_score score, @language
+      doc.add_submission_time submission_time
       @_send_request doc, callback
     catch err
       callback err, false
