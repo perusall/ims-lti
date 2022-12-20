@@ -74,7 +74,7 @@ class HMAC_SHA1
     @build_signature_raw hitUrl, parsedUrl, req.method, body, consumer_secret, token
 
   sign_string: (str, key, token) ->
-    key = "#{key}&"
+    key = "#{utils.special_encode(key)}&"
     key += token if token
 
     crypto.createHmac('sha1', key).update(str).digest('base64')
