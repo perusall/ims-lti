@@ -112,22 +112,24 @@ class OutcomeService
       callback err, false
 
 
-  send_replace_result_with_text: (score, text, callback) ->
+  send_replace_result_with_text: (score, submission_time, text, callback) ->
     doc = new OutcomeDocument @REQUEST_REPLACE, @source_did, @
 
     try
       doc.add_score score, @language,
+      doc.add_submission_time submission_time,
       doc.add_text text
       @_send_request doc, callback
     catch err
       callback err, false
 
 
-  send_replace_result_with_url: (score, url, callback) ->
+  send_replace_result_with_url: (score, submission_time, url, callback) ->
     doc = new OutcomeDocument @REQUEST_REPLACE, @source_did, @
 
     try
       doc.add_score score, @language,
+      doc.add_submission_time submission_time,
       doc.add_url url
       @_send_request doc, callback
     catch err
